@@ -1,0 +1,100 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  permissions Permission[]
+  users       User[]
+}
+model Permission {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  status      String?
+  roles       Role[]
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  username  String?  @unique
+  photo     String?
+  name      String?
+  password  String
+  role      Role     @relation(fields: [roleId], references: [id])
+  roleId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  authTokens AuthToken[]
+  transaksi transaksi[]
+}
+
+model AuthToken {
+  id        Int      @id @default(autoincrement())
+  token     String
+  userId    Int
+  createdAt DateTime @default(now())
+  @@unique([token])
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+// Laundry
+
+model layanan {
+  id          Int      @id @default(autoincrement())
+  nama        String   @unique
+  harga       Int
+  durasi      Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  detailTransaksi detailTransaksi[]
+}
+
+model konsumen {
+  id          Int      @id @default(autoincrement())
+  nama        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  transaksi   transaksi[]
+}
+
+model transaksi {
+  id          Int               @id @default(autoincrement())
+  userId      Int
+  konsumenId  Int
+  total       Int?
+  statusBayar String?           @default("belum")
+  statusAmbil String?           @default("belum")
+  // make tglAmbil default NULL
+  tglAmbil    DateTime?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  user        User              @relation(fields: [userId], references: [id])
+  konsumen    konsumen          @relation(fields: [konsumenId], references: [id])
+  detailTransaksi detailTransaksi[]
+}
+
+model detailTransaksi {
+  id          Int         @id @default(autoincrement())
+  transaksiId Int
+  layananId   Int
+  berat       Int
+  harga       Int
+  total_harga Int
+  transaksi   transaksi   @relation(fields: [transaksiId], references: [id])
+  layanan     layanan     @relation(fields: [layananId], references: [id])
+}
