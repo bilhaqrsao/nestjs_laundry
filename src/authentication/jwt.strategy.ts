@@ -10,10 +10,14 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private readonly prismaService: PrismaService,
     private readonly configService: ConfigService,
   ) {
+    // Tambahkan log untuk memastikan bahwa JWT_SECRET terbaca dengan benar
+    const secret = configService.get<string>('JWT_SECRET');
+    console.log('JWT_SECRET:', secret);
+
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: configService.get<string>('JWT_SECRET'),
+      secretOrKey: secret,
     });
   }
 
