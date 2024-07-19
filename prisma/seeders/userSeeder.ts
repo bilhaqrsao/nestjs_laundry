@@ -18,6 +18,13 @@ async function main() {
         password: hashedPasswordDeveloper,
         roleId: 1, // sesuaikan dengan id role Admin
       },
+      {
+        email: 'admin@example.com',
+        username: 'admin',
+        name: 'Admin',
+        password: hashedPasswordDeveloper,
+        roleId: 2, // sesuaikan dengan id role Admin
+      },
     ],
   });
 }
