@@ -1,7 +1,7 @@
-import { Strategy, ExtractJwt } from 'passport-jwt';
-import { PassportStrategy } from '@nestjs/passport';
-import { PrismaService } from 'src/prisma.service';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { PassportStrategy } from '@nestjs/passport';
+import { ExtractJwt, Strategy } from 'passport-jwt';
+import { PrismaService } from 'src/prisma.service';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -10,7 +10,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     private readonly prismaService: PrismaService,
     private readonly configService: ConfigService,
   ) {
-    // Tambahkan log untuk memastikan bahwa JWT_SECRET terbaca dengan benar
     const secret = configService.get<string>('JWT_SECRET');
     console.log('JWT_SECRET:', secret);
 
